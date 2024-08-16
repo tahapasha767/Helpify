@@ -3,19 +3,36 @@ import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useEffect } from 'react'
+import Alertbox from './Alertbox'
 const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
+  
+  { name: 'Assigments', href: '#' },
+  { name: 'Add Assigment', href: '#' },
+  { name: 'Chats', href: '#' },
+  { name: 'Payments', href: '#' },
 ]
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const {user,loginWithRedirect}=useAuth0();
-  console.log(user);
+  const[userlog,setuserlog]=useState(true);
+  useEffect(()=>{
+    if(user!=undefined)
+    {
+      console.log("the user has logged in");
+    }
+
+  },[user])
+
+  if(user==undefined)
+  {
+    console.log("hello")
+  }
   return (
+    
     <div className="bg-white">
+      {user?<Alertbox/>:""}
       <header className="absolute inset-x-0 top-0 z-50">
         <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
           <div className="flex lg:flex-1">
@@ -39,18 +56,30 @@ export default function Home() {
             </button>
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
+            {user&&navigation.map((item) => (
               <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">
                 {item.name}
               </a>
             ))}
           </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end"   onClick={()=>{
-                      loginWithRedirect();
-                    }}>
-            <a  className="text-sm font-semibold leading-6 text-gray-900">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            {!user ? (
+              <div
+                className="cursor-pointer text-sm font-semibold leading-6 text-gray-900"
+                onClick={loginWithRedirect}
+              >
+                Log in <span aria-hidden="true">&rarr;</span>
+              </div>
+            ) : (
+              <div className='flex justify-center items-center gap-4 '>
+                <div className='w-10 h-10 bg-green-700 rounded-3xl text-white flex justify-center items-center border cursor-pointer border-gray-950 hover:border-yellow-400'>{user.name[0].toUpperCase()}</div>
+              <div className="text-sm font-semibold leading-6 text-gray-900">
+              
+               
+              </div>
+              
+              </div>
+            )}
           </div>
         </nav>
         <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -77,7 +106,8 @@ export default function Home() {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="space-y-2 py-6">
-                  {navigation.map((item) => (
+                {user&& <div className='text-xl mb-8'>{user.name}</div>}
+                  {user&&navigation.map((item) => (
                     <a
                       key={item.name}
                       href={item.href}
@@ -87,7 +117,7 @@ export default function Home() {
                     </a>
                   ))}
                 </div>
-                <div className="py-6"    >
+                {!user?<div className="py-6 cursor-pointer" onClick={loginWithRedirect}    >
                   <a
                     
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
@@ -95,7 +125,16 @@ export default function Home() {
                   >
                     Log in
                   </a>
-                </div>
+                </div>:
+                <div className="py-6"    >
+                <a
+                  
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                
+                >
+                  Log out
+                </a>
+              </div>}
               </div>
             </div>
           </DialogPanel>
@@ -127,7 +166,7 @@ export default function Home() {
           </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Data to enrich your online business
+            Relieve Your Stressful Assignments and Records with Ease.
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
               Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
